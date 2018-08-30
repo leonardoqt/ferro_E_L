@@ -35,8 +35,10 @@ double cell :: get_d_ene(pot & dwp, int n0, vec & d_new_pos)
 	double de_onsite, de_short, de_long;
 	double e_temp;
 	double norm_temp;
-	const int n_max=1, k_max=2;
-	const double sigma = 1;
+	double re_s, im_s, k2, dk;
+	const double pi = 3.141592653589793238462643383279502884;
+	const int n_max=2, k_max=2;
+	const double sigma = 3.6;
 	vec pos_old;
 	vec LL;
 	// change in onsite energy
@@ -62,6 +64,7 @@ double cell :: get_d_ene(pot & dwp, int n0, vec & d_new_pos)
 		}
 	}
 //	std::cout<<"old E= "<<e_temp<<std::endl;
+	//
 	a_l[n0].pos = a_l[n0].pos + d_new_pos;
 	de_short = 0;
 	for(int t1=-n_max; t1<=n_max; t1++)
@@ -83,8 +86,53 @@ double cell :: get_d_ene(pot & dwp, int n0, vec & d_new_pos)
 //	std::cout<<"new E= "<<de_short<<std::endl;
 	a_l[n0].pos = a_l[n0].pos - d_new_pos;
 	de_short -= e_temp;
-	// change in long range energy
-	e_temp = 0;
 
-	return de_short;
+	// change in long range energy
+	dk = 2*pi / lat / numx;
+	e_temp = 0;
+	for(int t1=-k_max; t1<=k_max; t1++)
+	for(int t2=-k_max; t2<=k_max; t2++)
+	for(int t3=-k_max; t3<=k_max; t3++)
+	{
+		LL.x[0]=t1*dk, LL.x[1]=t2*dk, LL.x[2]=t3*dk;
+		k2 = LL.norm() * LL.norm();
+		re_s = im_s = 0;
+		if(t1!=0 || t2!=0 || t3!=0)
+		{
+			for(int nn=0; nn<num; nn++)
+			{
+				re_s += (cos(LL*a_l[nn].pos) - cos(LL*a_l[nn].pos0));
+				im_s += (sin(LL*a_l[nn].pos) - sin(LL*a_l[nn].pos0));
+			}
+			e_temp += exp(-sigma*sigma*k2/2)/k2*(re_s*re_s+im_s*im_s);
+		}
+	}
+	e_temp /= (2*pow(lat*numx,3));
+//	std::cout<<"old E= "<<e_temp<<std::endl;
+	//
+	a_l[n0].pos = a_l[n0].pos + d_new_pos;
+	de_long = 0;
+	for(int t1=-k_max; t1<=k_max; t1++)
+	for(int t2=-k_max; t2<=k_max; t2++)
+	for(int t3=-k_max; t3<=k_max; t3++)
+	{
+		LL.x[0]=t1*dk, LL.x[1]=t2*dk, LL.x[2]=t3*dk;
+		k2 = LL.norm() * LL.norm();
+		re_s = im_s = 0;
+		if(t1!=0 || t2!=0 || t3!=0)
+		{
+			for(int nn=0; nn<num; nn++)
+			{
+				re_s += (cos(LL*a_l[nn].pos) - cos(LL*a_l[nn].pos0));
+				im_s += (sin(LL*a_l[nn].pos) - sin(LL*a_l[nn].pos0));
+			}
+			de_long += exp(-sigma*sigma*k2/2)/k2*(re_s*re_s+im_s*im_s);
+		}
+	}
+	de_long /= (2*pow(lat*numx,3));
+//	std::cout<<"new E= "<<de_long<<std::endl;
+	a_l[n0].pos = a_l[n0].pos - d_new_pos;
+	de_long -= e_temp;
+
+	return de_onsite+de_short+de_long;
 }
