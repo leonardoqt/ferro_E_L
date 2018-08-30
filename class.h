@@ -35,7 +35,7 @@ private:
 	double ene, min;
 	double aa, bb;
 public:
-	void init(double, double);
+	void init(double, double);	//E, L
 	double get_E(double);
 };
 
@@ -63,7 +63,8 @@ public:
 	double ene_tot0, ene_tot1;
 
 	void init(double, int);		//unit lattice, number of atoms on each axis
-	void get_ene(pot&);
+	void update_pos(int, vec&);
+	double get_d_ene(pot&, int, vec&);
 };
 
 #endif
