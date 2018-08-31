@@ -24,8 +24,8 @@ void mc :: mv_atm(int atom_num, int &target, vec & d_dipole)
 {
 	double len[3];
 	target=rand()%atom_num;
-	len[0] = ((rand()/(double)RAND_MAX)*2-1)*scale;
-	len[1] = ((rand()/(double)RAND_MAX)*2-1)*scale;
+	len[0] = 0;//((rand()/(double)RAND_MAX)*2-1)*scale;
+	len[1] = 0;//((rand()/(double)RAND_MAX)*2-1)*scale;
 	len[2] = ((rand()/(double)RAND_MAX)*2-1)*scale;
 	d_dipole = len;
 }

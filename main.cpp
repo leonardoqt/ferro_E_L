@@ -68,8 +68,8 @@ int main()
 //		cout<<dE<<'\t'<<run1.accept_scale<<endl;
 		if(t1 % 10 == 0)
 		{
-			cout<<t1<<'\t';
-			sys1.find_dipole().print();
+			cout<<t1<<'\t'<<sys1.find_dipole()<<'\t'<<run1.scale<<endl;
+//			sys1.find_dipole().print();
 		}
 
 	}

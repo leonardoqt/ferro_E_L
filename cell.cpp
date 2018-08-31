@@ -5,6 +5,11 @@
 void cell :: init(double length, int NN)
 {	
 	vec pos;
+	vec dp;
+	vec p2;
+	dp.x[0] = 0;
+	dp.x[1] = 0;
+	dp.x[2] = 0.1;
 	lat = length;
 	numx = NN;
 	num = NN*NN*NN;
@@ -17,8 +22,9 @@ void cell :: init(double length, int NN)
 		pos.x[0] = t1 * lat;
 		pos.x[1] = t2 * lat;
 		pos.x[2] = t3 * lat;
+		p2 = pos + dp;
 		a_l[t1*NN*NN+t2*NN+t3].get_pos0(pos);
-		a_l[t1*NN*NN+t2*NN+t3].get_pos(pos);
+		a_l[t1*NN*NN+t2*NN+t3].get_pos(p2);
 		a_l[t1*NN*NN+t2*NN+t3].get_dipole();
 	}
 //	ene_onsite0 = ene_dipole0 = ene_tot0 = 0;

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cstring>
 #include <fstream>
 #ifndef MY_CLASS
@@ -26,6 +27,7 @@ public:
 	vec & operator=(double*);	// can replace import
 	double operator*(const vec&);
 	double norm();
+	friend std::ostream& operator<<(std::ostream&,vec);
 	//debug
 	void print();
 };

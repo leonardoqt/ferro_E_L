@@ -81,6 +81,12 @@ double vec :: norm()
 	return sqrt(res);
 }
 
+std::ostream& operator<<(std::ostream& out, vec B)
+{
+	out<<B.x[0]<<'\t'<<B.x[1]<<'\t'<<B.x[2];
+	return out;
+}
+
 //==========debug================
 
 void vec :: print()
