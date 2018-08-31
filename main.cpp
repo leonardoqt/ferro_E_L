@@ -61,12 +61,17 @@ int main()
 		}
 		// update scale
 		if(t1 % run1.check_scale == 0)
+		{
 			run1.update_scale();
-		if(t1 % 100 == 0)
+//			cout<<"new_scale: "<<run1.scale<<endl;
+		}
+//		cout<<dE<<'\t'<<run1.accept_scale<<endl;
+		if(t1 % 10 == 0)
 		{
 			cout<<t1<<'\t';
 			sys1.find_dipole().print();
 		}
+
 	}
 	return 0;
 }

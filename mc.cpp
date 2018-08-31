@@ -34,7 +34,7 @@ int mc :: if_accept(double dE)
 {
 	if (dE < 0)
 		return 1;
-	else if (rand()/(double)RAND_MAX < exp(dE/T))
+	else if (rand()/(double)RAND_MAX < exp(-dE/T))
 		return 1;
 	else
 		return 0;
