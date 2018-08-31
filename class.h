@@ -38,6 +38,7 @@ private:
 	double ene, min;
 	double aa, bb;
 friend cell;
+friend mc;
 public:
 	void init(double E, double L);	//E, L
 	double get_E(double r);
@@ -81,7 +82,7 @@ public:
 	double T;				// temperature of system
 public:
     void init(double Scale, int Check_scale, double Temperature);
-    void update_scale();
+    void update_scale(pot& dwp);
     void mv_atm(int atom_num, int &target, vec & d_dipole);
 	int if_accept(double dE);
 };

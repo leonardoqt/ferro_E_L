@@ -10,14 +10,15 @@ void mc :: init(double Scale, int Check_scale, double Temperature)
 	T = Temperature;
 }
 
-void mc :: update_scale()
+void mc :: update_scale(pot& dwp)
 {
 	if (accept_scale/check_scale < 0.2)
 		scale = scale / 2;
 	else if (accept_scale/check_scale > 0.4)
 		scale = scale * 1.616;
-	
 	accept_scale = 0;
+	if (scale > dwp.min*2)
+		scale = dwp.min*2;
 }
 
 void mc :: mv_atm(int atom_num, int &target, vec & d_dipole)
