@@ -2,14 +2,15 @@
 #include <cmath>
 #include <iostream>
 
-void cell :: init(double length, int NN)
+void cell :: init(double length, int NN, pot & dwp)
 {	
 	vec pos;
 	vec dp;
 	vec p2;
 	dp.x[0] = 0;
 	dp.x[1] = 0;
-	dp.x[2] = 0.1;
+	dp.x[2] = dwp.min;
+
 	lat = length;
 	numx = NN;
 	num = NN*NN*NN;

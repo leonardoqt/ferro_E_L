@@ -37,6 +37,7 @@ class pot
 private:
 	double ene, min;
 	double aa, bb;
+friend cell;
 public:
 	void init(double E, double L);	//E, L
 	double get_E(double r);
@@ -65,7 +66,7 @@ public:
 //	double ene_dipole0, ene_dipole1;
 //	double ene_tot0, ene_tot1;
 
-	void init(double length, int NN);		//unit lattice, number of atoms on each axis
+	void init(double length, int NN, pot& dwp);		//unit lattice, number of atoms on each axis
 	void update_pos(int n0, vec& d_new_pos);
 	double get_d_ene(pot& dwp, int n0, vec& d_new_pos);
 	vec find_dipole();

@@ -46,7 +46,7 @@ int main()
 
 	// initiate potential, cell, and mc
 	dvp.init(barrier,x0);
-	sys1.init(length,num_x);
+	sys1.init(length,num_x,dvp);
 	run1.init(x0,check_scale,temperature);
 
 	// start mc
