@@ -36,8 +36,8 @@ private:
 	double ene, min;
 	double aa, bb;
 public:
-	void init(double, double);	//E, L
-	double get_E(double);
+	void init(double E, double L);	//E, L
+	double get_E(double r);
 };
 
 class atom
@@ -63,9 +63,10 @@ public:
 //	double ene_dipole0, ene_dipole1;
 //	double ene_tot0, ene_tot1;
 
-	void init(double, int);		//unit lattice, number of atoms on each axis
-	void update_pos(int, vec&);
-	double get_d_ene(pot&, int, vec&);
+	void init(double length, int NN);		//unit lattice, number of atoms on each axis
+	void update_pos(int n0, vec& d_new_pos);
+	double get_d_ene(pot& dwp, int n0, vec& d_new_pos);
+	vec find_dipole();
 };
 
 class mc
@@ -74,10 +75,12 @@ public:
     double scale;       // scale random move vector
     int check_scale;    // number of runs to adjust scale
     double accept_scale;    // update scale
+	double T;				// temperature of system
 public:
-    void mc_init(double Scale, int Check_scale);
+    void init(double Scale, int Check_scale, double Temperature);
     void update_scale();
-    void mv_atm(int atom_num, int &target, double *&vec);
+    void mv_atm(int atom_num, int &target, vec & d_dipole);
+	int if_accept(double dE);
 };
 
 #endif

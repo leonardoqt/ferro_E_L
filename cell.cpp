@@ -21,7 +21,7 @@ void cell :: init(double length, int NN)
 		a_l[t1*NN*NN+t2*NN+t3].get_pos(pos);
 		a_l[t1*NN*NN+t2*NN+t3].get_dipole();
 	}
-	ene_onsite0 = ene_dipole0 = ene_tot0 = 0;
+//	ene_onsite0 = ene_dipole0 = ene_tot0 = 0;
 }
 
 void cell :: update_pos(int n0, vec &  d_new_pos)
@@ -135,4 +135,13 @@ double cell :: get_d_ene(pot & dwp, int n0, vec & d_new_pos)
 	de_long -= e_temp;
 
 	return de_onsite+de_short+de_long;
+}
+
+vec cell :: find_dipole()
+{
+	vec res;
+	res.clean();
+	for (int t1=0; t1<num; t1++)
+		res = res + a_l[t1].dipole;
+	return res;
 }
