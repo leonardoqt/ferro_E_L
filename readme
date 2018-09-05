@@ -1,2 +1,2 @@
-barrier	x0	length	num_x	temperature
+barrier	x0	length	max_length_neighbor	num_x	temperature
 tot_run	check_scale

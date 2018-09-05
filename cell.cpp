@@ -4,6 +4,8 @@
 
 void cell :: init(double length, int NN, pot & dwp)
 {	
+	const int nei_max = 50;
+	int current;
 	vec pos;
 	vec dp;
 	vec p2;
@@ -15,20 +17,64 @@ void cell :: init(double length, int NN, pot & dwp)
 	numx = NN;
 	num = NN*NN*NN;
 	a_l = new atom[num];
+	ind = new int*[num];
+	nei = new int*[num];
+	num_nei = new int[num];
 
+	for(int t1=0; t1<num; t1++)
+	{
+		ind[t1] = new int[3];
+		nei[t1] = new int[nei_max];
+	}
+
+	current = 0;
 	for(int t1=0; t1<NN; t1++)
 	for(int t2=0; t2<NN; t2++)
 	for(int t3=0; t3<NN; t3++)
 	{
+		// initiate atom position and dipole
 		pos.x[0] = t1 * lat;
 		pos.x[1] = t2 * lat;
 		pos.x[2] = t3 * lat;
 		p2 = pos + dp;
-		a_l[t1*NN*NN+t2*NN+t3].get_pos0(pos);
-		a_l[t1*NN*NN+t2*NN+t3].get_pos(p2);
-		a_l[t1*NN*NN+t2*NN+t3].get_dipole();
+		a_l[current].get_pos0(pos);
+		a_l[current].get_pos(p2);
+		a_l[current].get_dipole();
+		// register index of each atom
+		ind[current][0] = t1;
+		ind[current][1] = t2;
+		ind[current][2] = t3;
+		current++;
 	}
 //	ene_onsite0 = ene_dipole0 = ene_tot0 = 0;
+}
+
+void cell :: get_neighbor(double max_d)
+{
+	vec xx,yy,zz;
+
+	xx.clean(), xx.x[0] = lat*numx;
+	yy.clean(), yy.x[1] = lat*numx;
+	zz.clean(), zz.x[2] = lat*numx;
+
+	for(int t1=0; t1<num; t1++)
+	{
+		num_nei[t1]=0;
+		for(int t2=0; t2<num; t2++)
+			if(t2!=t1)
+			{
+				for(int nx=-1;nx<=1;nx++)
+				for(int ny=-1;ny<=1;ny++)
+				for(int nz=-1;nz<=1;nz++)
+				{
+					if ((a_l[t2].pos0+xx*nx+yy*ny+zz*nz-a_l[t1].pos0).norm() <= max_d)
+					{
+						nei[t1][num_nei[t1]] = t2;
+						num_nei[t1]++;
+					}
+				}
+			}
+	}
 }
 
 void cell :: update_pos(int n0, vec &  d_new_pos)
@@ -143,6 +189,25 @@ double cell :: get_d_ene(pot & dwp, int n0, vec & d_new_pos)
 
 	return de_onsite+de_short+de_long;
 }
+
+double cell :: get_d_ene_short(pot & dwp, int n0, vec & d_new_pos)
+{
+	double de_onsite, de_short;
+	double e_temp;
+	double norm_temp;
+	double re_s, im_s, k2, dk;
+	const double pi = 3.141592653589793238462643383279502884;
+	vec pos_old;
+	vec LL;
+	// change in onsite energy
+	e_temp = dwp.get_E(a_l[n0].dipole.norm());
+	de_onsite = dwp.get_E((a_l[n0].dipole+d_new_pos).norm()) - e_temp;
+	// dipole-dipole interaction
+	// change in short range energy
+
+	return de_onsite+de_short;
+}
+
 
 vec cell :: find_dipole()
 {

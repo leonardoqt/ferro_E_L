@@ -13,7 +13,7 @@ int main()
 	pot dwp;
 	cell sys1;
 	mc run1;
-	double barrier = 0.01, x0 = 0.1, length = 1.0, temperature = 0.1;
+	double barrier = 0.01, x0 = 0.1, length = 1.0, max_length_nei = 1.1, temperature = 0.1;
 	int num_x = 10,num_tot;
 	int tot_run = 100000;
 	int check_scale = 100;
@@ -40,7 +40,7 @@ int main()
 */
 
 	// get potential, cell parameters
-	cin>>barrier>>x0>>length>>num_x>>temperature;
+	cin>>barrier>>x0>>length>>max_length_nei>>num_x>>temperature;
 	cin>>tot_run>>check_scale;
 	num_tot = num_x*num_x*num_x;
 
@@ -48,6 +48,7 @@ int main()
 	dwp.init(barrier,x0);
 	sys1.init(length,num_x,dwp);
 	run1.init(x0,check_scale,temperature);
+	sys1.get_neighbor(max_length_nei);
 
 	// start mc
 	for(int t1=1; t1<tot_run; t1++)

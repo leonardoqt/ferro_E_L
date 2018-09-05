@@ -62,14 +62,19 @@ private:
 	double lat;
 	int numx, num;	//along one direction, tot number
 	atom * a_l;
+	int ** ind;		// xyz index of each site
+	int ** nei;		// 1d index of neighbor of each site
+	int  * num_nei;	// number of neighbors
 public:
 //	double ene_onsite0, ene_onsite1;
 //	double ene_dipole0, ene_dipole1;
 //	double ene_tot0, ene_tot1;
 
 	void init(double length, int NN, pot& dwp);		//unit lattice, number of atoms on each axis
+	void get_neighbor(double max_d);
 	void update_pos(int n0, vec& d_new_pos);
 	double get_d_ene(pot& dwp, int n0, vec& d_new_pos);
+	double get_d_ene_short(pot& dwp, int n0, vec& d_new_pos);
 	vec find_dipole();
 };
 
