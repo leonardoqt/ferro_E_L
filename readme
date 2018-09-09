@@ -1,2 +1,2 @@
-barrier	x0	length	max_length_neighbor	num_x	temperature
-tot_run	check_scale
+barrier	x0	length	max_length_neighbor	num_x	lambda	temperature
+tot_run	dump_factor	check_scale

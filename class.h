@@ -16,6 +16,7 @@ private:
 	double x[3];
 friend atom;
 friend cell;
+friend mc;
 public:
 	void import(double *);
 	void clean();			// reset value to zero
@@ -49,6 +50,7 @@ class atom
 private:
 	vec pos, pos0, dipole;
 friend cell;
+friend mc;
 public:
 	void get_pos0(vec &);
 	void get_pos(vec &);
@@ -65,6 +67,7 @@ private:
 	int ** ind;		// xyz index of each site
 	int ** nei;		// 1d index of neighbor of each site
 	int  * num_nei;	// number of neighbors
+friend mc;
 public:
 //	double ene_onsite0, ene_onsite1;
 //	double ene_dipole0, ene_dipole1;
@@ -74,7 +77,7 @@ public:
 	void get_neighbor(double max_d);
 	void update_pos(int n0, vec& d_new_pos);
 	double get_d_ene(pot& dwp, int n0, vec& d_new_pos);
-	double get_d_ene_short(pot& dwp, int n0, vec& d_new_pos);
+	double get_d_ene_short(pot& dwp, int n0, vec& d_new_pos, double lambda);
 	vec find_dipole();
 };
 
@@ -88,7 +91,7 @@ public:
 public:
     void init(double Scale, int Check_scale, double Temperature);
     void update_scale(pot& dwp);
-    void mv_atm(int atom_num, int &target, vec & d_dipole);
+    void mv_atm(cell &sys1, int &target, vec & d_dipole);
 	int if_accept(double dE);
 };
 

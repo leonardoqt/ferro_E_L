@@ -12,6 +12,7 @@ void cell :: init(double length, int NN, pot & dwp)
 	dp.x[0] = 0;
 	dp.x[1] = 0;
 	dp.x[2] = dwp.min;
+//	dp.x[2] = 0;
 
 	lat = length;
 	numx = NN;
@@ -190,20 +191,25 @@ double cell :: get_d_ene(pot & dwp, int n0, vec & d_new_pos)
 	return de_onsite+de_short+de_long;
 }
 
-double cell :: get_d_ene_short(pot & dwp, int n0, vec & d_new_pos)
+double cell :: get_d_ene_short(pot & dwp, int n0, vec & d_new_pos, double lambda)
 {
 	double de_onsite, de_short;
 	double e_temp;
 	double norm_temp;
-	double re_s, im_s, k2, dk;
-	const double pi = 3.141592653589793238462643383279502884;
-	vec pos_old;
-	vec LL;
 	// change in onsite energy
 	e_temp = dwp.get_E(a_l[n0].dipole.norm());
 	de_onsite = dwp.get_E((a_l[n0].dipole+d_new_pos).norm()) - e_temp;
 	// dipole-dipole interaction
 	// change in short range energy
+	e_temp = 0;
+	for(int t1=0; t1<num_nei[n0]; t1++)
+		e_temp += lambda*(a_l[n0].dipole*a_l[nei[n0][t1]].dipole);
+	a_l[n0].dipole = a_l[n0].dipole + d_new_pos;
+	de_short = 0;
+	for(int t1=0; t1<num_nei[n0]; t1++)
+		de_short += lambda*(a_l[n0].dipole*a_l[nei[n0][t1]].dipole);
+	de_short -= e_temp;
+	a_l[n0].dipole = a_l[n0].dipole - d_new_pos;
 
 	return de_onsite+de_short;
 }
@@ -215,5 +221,5 @@ vec cell :: find_dipole()
 	res.clean();
 	for (int t1=0; t1<num; t1++)
 		res = res + a_l[t1].dipole;
-	return res;
+	return res/num;
 }

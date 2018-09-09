@@ -17,17 +17,20 @@ void mc :: update_scale(pot& dwp)
 	else if (accept_scale/check_scale > 0.4)
 		scale = scale * 1.616;
 	accept_scale = 0;
-	if (scale > dwp.min*2)
-		scale = dwp.min*2;
+	if (scale > dwp.min*4)
+		scale = dwp.min*4;
 }
 
-void mc :: mv_atm(int atom_num, int &target, vec & d_dipole)
+void mc :: mv_atm(cell &sys1, int &target, vec & d_dipole)
 {
 	double len[3];
-	target=rand()%atom_num;
+	target=rand()%sys1.num;
 	len[0] = 0;//((rand()/(double)RAND_MAX)*2-1)*scale;
 	len[1] = 0;//((rand()/(double)RAND_MAX)*2-1)*scale;
-	len[2] = ((rand()/(double)RAND_MAX)*2-1)*scale;
+	if (rand()/(double)RAND_MAX < 0.5)
+		len[2] = ((rand()/(double)RAND_MAX)*2-1)*scale;
+	else 
+		len[2] = -2*sys1.a_l[target].dipole.x[2] + ((rand()/(double)RAND_MAX)*2-1)*scale;
 	d_dipole = len;
 }
 
