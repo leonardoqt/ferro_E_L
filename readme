@@ -1,2 +1,2 @@
-barrier	x0	length	max_length_neighbor	num_x	lambda	temperature
+dw_a	dw_b	dw_c	l_xx	l_xy	length	max_length_neighbor	num_x	temperature
 tot_run	dump_factor	check_scale

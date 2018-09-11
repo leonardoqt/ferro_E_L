@@ -1,5 +1,6 @@
-#include "class.h"
 #include <cmath>
+#include <cstdlib>
+#include "class.h"
 #include <iostream>
 
 void cell :: init(double length, int NN, pot & dwp)
@@ -48,6 +49,53 @@ void cell :: init(double length, int NN, pot & dwp)
 		current++;
 	}
 //	ene_onsite0 = ene_dipole0 = ene_tot0 = 0;
+}
+
+void cell :: init_2d(double length, int NN, pot & dwp)
+{	
+	const int nei_max = 50;
+	int current;
+	vec pos;
+	vec dp;
+	vec p2;
+	double l_max = sqrt(dwp.ax2/2/dwp.bx4);
+	dp.x[2] = 0;
+
+	lat = length;
+	numx = NN;
+	num = NN*NN*NN;
+	a_l = new atom[num];
+	ind = new int*[num];
+	nei = new int*[num];
+	num_nei = new int[num];
+
+	for(int t1=0; t1<num; t1++)
+	{
+		ind[t1] = new int[3];
+		nei[t1] = new int[nei_max];
+	}
+
+	current = 0;
+	for(int t1=0; t1<NN; t1++)
+	for(int t2=0; t2<NN; t2++)
+	for(int t3=0; t3<NN; t3++)
+	{
+		// initiate atom position and dipole
+		pos.x[0] = t1 * lat;
+		pos.x[1] = t2 * lat;
+		pos.x[2] = t3 * lat;
+		dp.x[0] = ((rand()/(double)RAND_MAX)*2-1)*l_max;
+		dp.x[1] = ((rand()/(double)RAND_MAX)*2-1)*l_max;
+		p2 = pos + dp;
+		a_l[current].get_pos0(pos);
+		a_l[current].get_pos(p2);
+		a_l[current].get_dipole();
+		// register index of each atom
+		ind[current][0] = t1;
+		ind[current][1] = t2;
+		ind[current][2] = t3;
+		current++;
+	}
 }
 
 void cell :: get_neighbor(double max_d)
@@ -214,6 +262,28 @@ double cell :: get_d_ene_short(pot & dwp, int n0, vec & d_new_pos, double lambda
 	return de_onsite+de_short;
 }
 
+double cell :: get_d_ene_short_2d(pot & dwp, int n0, vec & d_new_pos, double l_xx, double l_xy)
+{
+	double de_onsite, de_short;
+	double e_temp;
+	double t_x, t_y;
+	// change in onsite energy
+	e_temp = dwp.get_E_2d(a_l[n0].dipole);
+	a_l[n0].dipole = a_l[n0].dipole+d_new_pos;
+	de_onsite = dwp.get_E_2d(a_l[n0].dipole) - e_temp;
+	a_l[n0].dipole = a_l[n0].dipole-d_new_pos;
+	// dipole-dipole interaction
+	// change in short range energy
+	t_x = t_y = 0;
+	for(int t1=0; t1<num_nei[n0]; t1++)
+	{
+		t_x += a_l[nei[n0][t1]].dipole.x[0];
+		t_y += a_l[nei[n0][t1]].dipole.x[1];
+	}
+	de_short = -l_xx*(d_new_pos.x[0]*t_x+d_new_pos.x[1]*t_y) - l_xy*(d_new_pos.x[0]*t_y+d_new_pos.x[1]*t_x);
+	de_short /= num_nei[n0];
+	return de_onsite+de_short;
+}
 
 vec cell :: find_dipole()
 {
