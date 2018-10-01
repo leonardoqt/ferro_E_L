@@ -37,7 +37,6 @@ int main()
 	// initiate potential, cell, and mc
 	dwp.init(barrier,p_min);
 	sys1.init(length,num_x,dwp);
-	output<<sys1<<endl;
 	sys1.get_neighbor(max_length_nei);
 	run1.init(length/5,check_scale,temperature);
 
