@@ -87,6 +87,12 @@ std::ostream& operator<<(std::ostream& out, vec B)
 	return out;
 }
 
+std::ofstream& operator<<(std::ofstream& out, vec B)
+{
+	out<<B.x[0]<<'\t'<<B.x[1]<<'\t'<<B.x[2];
+	return out;
+}
+
 //==========debug================
 
 void vec :: print()

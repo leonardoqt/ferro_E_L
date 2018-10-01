@@ -30,6 +30,7 @@ public:
 	double operator*(const vec&);
 	double norm();
 	friend std::ostream& operator<<(std::ostream&,vec);
+	friend std::ofstream& operator<<(std::ofstream&,vec);
 	//debug
 	void print();
 };
@@ -38,20 +39,18 @@ class pot
 {
 private:
 	double ene, min;
-	double aa, bb;
-	double ax2, axy, bx4;
+	double x2,y2,xy,x4,y4,x2y2;
 friend cell;
 friend mc;
 public:
 	void init(double E, double L);
-	void init_2d(double a, double b, double c);
-	double get_E(double r);
-	double get_E_2d(vec & p);
+	void init(double a0,double a1,double a2,double a3, double a4, double a5);
+	double get_E(vec & p);
 };
 
 class atom
 {
-private:
+public:
 	vec pos, pos0, dipole;
 friend cell;
 friend mc;
@@ -68,19 +67,16 @@ private:
 	double lat;
 	int numx, num;	//along one direction, tot number
 	atom * a_l;
-	int ** ind;		// xyz index of each site
 	int ** nei;		// 1d index of neighbor of each site
 	int  * num_nei;	// number of neighbors
 friend mc;
 public:
 	void init(double length, int NN, pot& dwp);		//unit lattice, number of atoms on each axis
-	void init_2d(double length, int NN, pot& dwp);		//unit lattice, number of atoms on each axis
 	void get_neighbor(double max_d);
-	void update_pos(int n0, vec& d_new_pos);
-	double get_d_ene(pot& dwp, int n0, vec& d_new_pos);
-	double get_d_ene_short(pot& dwp, int n0, vec& d_new_pos, double lambda);
-	double get_d_ene_short_2d(pot& dwp, int n0, vec& d_new_pos, double l_xx, double l_xy);
+	void update_pos(int n0, vec& d_pos);
+	double get_d_ene_cross(pot& dwp, int n0, vec& d_pos, double lambda);
 	vec find_dipole();
+	friend std::ofstream& operator<<(std::ofstream&,cell&);
 };
 
 class mc
@@ -93,8 +89,7 @@ public:
 public:
     void init(double Scale, int Check_scale, double Temperature);
     void update_scale(pot& dwp);
-    void mv_atm(cell &sys1, int &target, vec & d_dipole);
-    void mv_atm_2d(cell &sys1, int &target, vec & d_dipole);
+    void mv_atm(cell &sys1, int &target, vec &d_dipole);
 	int if_accept(double dE);
 };
 
